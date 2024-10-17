@@ -8,6 +8,16 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.svm import SVC
+from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import RandomizedSearchCV
+from sklearn.metrics import f1_score, precision_score, accuracy_score
+from sklearn.metrics import confusion_matrix
+from sklearn.ensemble import StackingClassifier
+import joblib
 
 df = pd.read_csv('Project_1_Data.csv')
 
@@ -44,38 +54,25 @@ plt.show()
 X = df[['X', 'Y', 'Z']]
 Y = df['Step']
 
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
 X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=42)
 
-#model 1: Logistic Regression
-from sklearn.linear_model import LogisticRegression
 LR = LogisticRegression(max_iter=1000)
 LR.fit(X_train, Y_train)
 LR_pred = LR.predict(X_test)
 LR_test = accuracy_score(LR_pred, Y_test)
 print("\nLogistic Regression test accuracy is: ", round(LR_test, 4))
 
-#model 2: Random Forest Classifier
-from sklearn.ensemble import RandomForestClassifier
 RFC = RandomForestClassifier(n_estimators=100, random_state=42)
 RFC.fit(X_train, Y_train)
 RFC_pred = RFC.predict(X_test)
 RFC_test = accuracy_score(RFC_pred, Y_test)
 print("\nRandom Forest Classifier test accuracy is: ", round(RFC_test, 4))
 
-#model 3: Support Vector Machine (SVC)
-from sklearn.svm import SVC
 SVM = SVC()  
 SVM.fit(X_train, Y_train)
 SVM_pred = SVM.predict(X_test)
 SVM_test = accuracy_score(SVM_pred, Y_test)
 print("\nSupport Vector Machine Classifier test accuracy is: ", round(SVM_test, 4))
-
-# Grid Search Cross Validation
-# Randomized Search Cross Validation
-from sklearn.model_selection import GridSearchCV
-from sklearn.model_selection import RandomizedSearchCV
 
 model_1 = [
     {'name': 'LogisticRegression', 'model': LogisticRegression(random_state=42, max_iter=10000),
@@ -134,8 +131,6 @@ SVM_best = SVC(**SVM_params, random_state=42)
 SVM_best.fit(X_train, Y_train)
 SVM_best_pred = SVM_best.predict(X_test)
 
-from sklearn.metrics import f1_score, precision_score, accuracy_score
-
 def metrics_calc(predictions, true_values):
     accuracy = accuracy_score(true_values, predictions)
     precision = precision_score(true_values, predictions, average='weighted', zero_division=0)  
@@ -154,7 +149,6 @@ print(f"\nRandom Forest Classifier 2: Accuracy: {round(accuracy, 4)}, Precision:
 accuracy, precision,f1 =  metrics_calc(SVM_best_pred, Y_test)
 print(f"\nSupport Vector Machine Classifier: Accuracy: {round(accuracy, 4)}, Precision: {round(precision, 4)}, F1 Score: {round(f1, 4)}")
 
-from sklearn.metrics import confusion_matrix
 cm = confusion_matrix(Y_test, LR_best_pred)  
 plt.figure(figsize=(10, 8))
 sns.heatmap(cm, annot=True, fmt="d", cmap='Blues', xticklabels=RFC.classes_, yticklabels=RFC.classes_) 
@@ -164,8 +158,6 @@ plt.title('Logistic Regression Confusion Matrix')
 plt.show()
 
 # Step 6
-from sklearn.ensemble import StackingClassifier
-
 estimators = [
     ('lr', LR_best),
     ('rf1', RFC_best_1)
@@ -178,7 +170,6 @@ Y_pred = stacked_model.predict(X_test)
 accuracy, precision, f1 = metrics_calc(Y_pred, Y_test)
 print(f"\nStacked Model: Accuracy: {round(accuracy, 4)}, Precision: {round(precision, 4)}, F1 Score: {round(f1, 4)}\n")
 
-from sklearn.metrics import confusion_matrix
 cm = confusion_matrix(Y_test, Y_pred)  
 plt.figure(figsize=(10, 8))
 sns.heatmap(cm, annot=True, fmt="d", cmap='Blues', xticklabels=RFC.classes_, yticklabels=RFC.classes_) 
@@ -188,8 +179,6 @@ plt.title('Stacked Model Confusion Matrix')
 plt.show()
 
 # Step 7
-import joblib
-
 LR_best = LogisticRegression(max_iter=10000, **LR_params)
 LR_best.fit(X, Y)  
 
@@ -198,9 +187,9 @@ joblib.dump(LR_best, filename)
 
 model = joblib.load(filename)
 data = [[9.375,3.0625,1.51], [6.995,5.125,0.3875], [0,3.0625,1.93], [9.4,3,1.8], [9.4,3,1.3]]
-predictions = model.predict(data)
+pred = model.predict(data)
 
-print(predictions)
+print(pred)
 
 
 
