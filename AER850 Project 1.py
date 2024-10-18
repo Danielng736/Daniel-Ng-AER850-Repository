@@ -18,7 +18,6 @@ from sklearn.metrics import f1_score, precision_score, accuracy_score
 from sklearn.metrics import confusion_matrix
 from sklearn.ensemble import StackingClassifier
 import joblib
-import warnings
 
 df = pd.read_csv('Project_1_Data.csv')
 
