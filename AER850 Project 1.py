@@ -18,6 +18,7 @@ from sklearn.metrics import f1_score, precision_score, accuracy_score
 from sklearn.metrics import confusion_matrix
 from sklearn.ensemble import StackingClassifier
 import joblib
+import warnings
 
 df = pd.read_csv('Project_1_Data.csv')
 
@@ -97,7 +98,7 @@ model_1 = [
      'parameters': {'C': [0.1, 1, 10, 100], 'kernel': ['linear', 'rbf', 'poly'], 'gamma': ['scale', 'auto', 0.1, 1]}}
          ]
 
-# Mode 2 parameters
+# Model 2 parameters
 model_2 = [
     {'name': 'RandomForestClassifier', 'model': RandomForestClassifier(random_state=42),
      'parameters': {'n_estimators': [10, 30, 50, 100, 200], 'max_depth': [None, 10, 20, 30, 40], 'min_samples_split': [2, 5, 10], 'min_samples_leaf': [1, 2, 4], 'max_features': ['sqrt', 'log2']}}
@@ -203,7 +204,7 @@ plt.show()
 # Step 7
 # using LR to predict the class based on the given coordinates
 LR_best = LogisticRegression(max_iter=10000, **LR_params)
-LR_best.fit(X, Y)  
+LR_best.fit(X.values, Y)  
 
 filename = 'model.joblib'
 joblib.dump(LR_best, filename)
@@ -213,6 +214,5 @@ data = [[9.375,3.0625,1.51], [6.995,5.125,0.3875], [0,3.0625,1.93], [9.4,3,1.8],
 pred = model.predict(data)
 
 print(pred)
-
 
 
