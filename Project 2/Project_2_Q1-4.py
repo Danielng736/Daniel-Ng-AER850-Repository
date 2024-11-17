@@ -34,17 +34,15 @@ model = Sequential([
     BatchNormalization(),
     LeakyReLU(alpha=0.01),
     MaxPooling2D(pool_size=(2, 2)),
-    Dropout(0.25),
 
     Conv2D(32, (3, 3), activation='relu'),
     BatchNormalization(),
     LeakyReLU(alpha=0.01),
     MaxPooling2D(pool_size=(2, 2)),
-    Dropout(0.5),
 
     Flatten(),
     Dense(64, activation='relu'),
-    Dropout(0.65),
+    Dropout(0.5),
     Dense(3, activation='softmax')
 ])
 
