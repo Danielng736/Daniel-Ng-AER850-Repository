@@ -62,7 +62,7 @@ model = Sequential([
 model.compile(loss='categorical_crossentropy', optimizer=Adam(learning_rate=0.0001), metrics=['accuracy'])
 
 # Early stopping
-stop = EarlyStopping(monitor='val_loss', patience=10, restore_best_weights=True)
+stop = EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
 
 # Training the model
 hist = model.fit(train_generator, epochs=100, validation_data=validation_generator, callbacks=[stop], class_weight=wgts_dict)
