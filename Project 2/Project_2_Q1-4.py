@@ -30,18 +30,30 @@ wgts_dict = dict(enumerate(wgts))
 
 # Builds the model
 model = Sequential([
-    Conv2D(16, (3, 3), input_shape=(500, 500, 3), activation='relu'),
+    Conv2D(32, (3, 3), input_shape=(500, 500, 3), activation='relu'),
     BatchNormalization(),
     LeakyReLU(alpha=0.01),
     MaxPooling2D(pool_size=(2, 2)),
 
-    Conv2D(32, (3, 3), activation='relu'),
+    Conv2D(64, (3, 3), activation='relu'),
+    BatchNormalization(),
+    LeakyReLU(alpha=0.01),
+    MaxPooling2D(pool_size=(2, 2)),
+
+    Conv2D(128, (3, 3), activation='relu'),
+    BatchNormalization(),
+    LeakyReLU(alpha=0.01),
+    MaxPooling2D(pool_size=(2, 2)),
+
+    Conv2D(256, (3, 3), activation='relu'),
     BatchNormalization(),
     LeakyReLU(alpha=0.01),
     MaxPooling2D(pool_size=(2, 2)),
 
     Flatten(),
-    Dense(64, activation='relu'),
+    Dense(256, activation='relu'),
+    Dropout(0.5),
+    Dense(128, activation='relu'),
     Dropout(0.5),
     Dense(3, activation='softmax')
 ])
@@ -53,7 +65,7 @@ model.compile(loss='categorical_crossentropy', optimizer=Adam(learning_rate=0.00
 stop = EarlyStopping(monitor='val_loss', patience=10, restore_best_weights=True)
 
 # Training the model
-hist = model.fit(train_generator, epochs=30, validation_data=validation_generator, callbacks=[stop], class_weight=wgts_dict)
+hist = model.fit(train_generator, epochs=100, validation_data=validation_generator, callbacks=[stop], class_weight=wgts_dict)
 
 model.save('model.h5')
 
